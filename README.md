@@ -11,8 +11,6 @@ Going on a long trip through the countryside and want your kids to look onto som
 1. **Spot targets:** GoSpotter presents you with items to find together. Some are common, some rare — and the rarer they are, the more points they’re worth. Do you take the *Cow* for 1 point, hold out for a *Chicken* worth 3, or gamble on spotting a *Sheep* for 7? After each find, new targets appear.
 1. **Finish the Run:** When you're done, close the run to see a summary of your adventure: total points, number of items found, and your rarest discoveries. Each run becomes a report card you can save or share with friends.
 
----
-
 ## Features
 
 * **Offline First:** Works without a steady internet connection. Preload themes before you go.
