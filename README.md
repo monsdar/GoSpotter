@@ -4,8 +4,6 @@
 
 Going on a long trip through the countryside and want your kids to look onto something other than the tablet screen? Hanging our with your friends and looking for a fun activity? GoSpotter motivates everyone to look around, notice details, and spot the most interesting findings.
 
----
-
 ## How it works
 
 1. **Start a new Run:** Whether you're on a holiday trip, visit the Zoo or simply sit at a café on the street corner - there's always something to discover. Just start a new run, pick a few Spot Packs, and you’re ready to play.  
@@ -31,8 +29,6 @@ Depending on your situation (location, season, activity) you can select from man
 * Farm animals: Cows, Horses, Chicken, ...
 * Halloween: Pumpkin, Spider, Candles, ...
 * ...
-
----
 
 ## Get Started
 
