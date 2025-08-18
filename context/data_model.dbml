@@ -1,0 +1,151 @@
+
+Table spot_target {
+    id integer [primary key]
+    slug varchar(255) [not null, unique]
+    name varchar(255) [ref: > localized_string.key]
+    logo integer [ref: - media_asset.id]
+    constraints integer [ref: > spot_constraint.id, note: 'Static constraints that apply a weight onto the score. E.g. cows being much harder to find at night']
+    version integer
+    min_app_version integer
+    release_status release_status
+    internal_notes varchar [note: 'e.g. a reason why a certain target has been retired']
+
+    Note: 'A single thing that is to be found. Cow, Mercedes, Bus etc. A spot_target can be in many spot_packs at once.'
+}
+
+Enum release_status {
+    draft
+    live
+    paused
+    retired
+}
+
+Table spot_pack {
+    id integer [primary key]
+    slug varchar(255) [not null, unique]
+    title varchar(255) [ref: > localized_string.key]
+    description varchar(255) [ref: > localized_string.key]
+    logo integer [ref: - media_asset.id]
+    labels integer [ref: > labels.id, null]
+    version integer
+    min_app_version integer
+    release_status release_status
+
+    Note: 'A list of SpotTargets to be found, fitting a common theme like Halloween, Farm, Autobahn etc.'
+}
+
+Table pack_target_relation {
+    spot_target_id integer [ref: > spot_target.id]
+    spot_pack_id integer [ref: > spot_pack.id]
+    score integer [note: 'Score differs for a thing between packs']
+    constraints spot_constraints [note: 'Constraints apply additional weights onto the score, related to the used SpotPack. E.g. Cows being much harder to find in the City']
+    release_status release_status [note: 'To manage the status of a connection without removing it, e.g. when Cows should not be part of the city pack anymore.']
+    
+    indexes {
+        (spot_target_id, spot_pack_id) [pk]
+    }
+    
+    Note: 'The relation between SpotPack and SpotTarget. This stores additional constraints along with the relation, e.g. in a pack "City" it\'s more common to find the target "bus" than in the "Autobahn" pack.'
+}
+
+Table spot_constraint {
+    id integer [primary key]
+    slug varchar(255) [not null, unique]
+    name varchar(255) [ref: > localized_string.key]
+    description varchar(255) [ref: > localized_string.key]
+    weight integer [note: 'Additional factor to apply when the constraint is active']
+
+    Note: 'Environment conditions that could exist that have impact on the rarity of SpotTargets, e.g. constraint "nighttime" making it much rarer to find certain animals like cows. Examples include "outdoor", "nighttime", "stationary"'
+}
+
+Table localized_string {
+    key varchar(255) [primary key]
+    text varchar
+    language_id integer [ref: - language.key]
+    
+    indexes {
+        (key, language_id) [unique]
+    }
+
+    Note: 'A translated text, along with its language shorthand'
+}
+
+Table language {
+    key varchar(5) [pk, note: 'de_de, en_us, ...']
+    language_name varchar(255) [note: 'user-readable name of the language']
+    flag integer [ref: - media_asset.id]
+
+    Note: 'A supported language that is available in the app'
+}
+
+Table location {
+    latitude float
+    longitude float
+    accuracy float [note: 'confidence in percent, range 0.0 to 1.0']
+
+    Note: 'A position in the world'
+}
+
+Table labels {
+    id integer [primary key]
+    slug varchar(255) [not null, unique]
+    label_name varchar(255) [ref: > localized_string.key]
+
+    Note: 'List of labels that can be added to a SpotPack like Vacation, Germany, Christmas etc. Allows to search and find applicable packs easier.'
+}
+
+Table app_settings {
+    selected_language varchar(5) [ref: - language.key]
+    analytics_optin boolean
+    camera_enabled boolean
+
+    Note: 'This stores the settings a user made to the app'
+}
+
+Table media_asset {
+    id integer [primary key]
+    type media_type
+    storagepath varchar
+    attributions varchar
+
+    Note: 'A logo, image or photo that is part of a bundle, target or has been taken by the user'
+}
+
+Enum media_type {
+    photo
+    svg
+    lottie
+}
+
+Table photo {
+    id integer [primary key]
+    capture_date timestamp [default: `now()`]
+    capture_location location
+    image integer [ref: - media_asset.id]
+
+    Note: 'A picture taken during playing the game'
+}
+
+Table finding {
+    id integer [primary key]
+    find_date timestamp [default: `now()`]
+    spot_target integer [ref: - spot_target.id]
+    find_location location
+    points integer [note: 'stores the amount of awarded points']
+    photos integer [ref: > media_asset.id]
+    run run [note: 'Which Run this Finding belongs to']
+
+    Note: 'A thing that has been found during a Run'
+}
+
+Table run {
+    id integer [primary key]
+    start_date timestamp [default: `now()`]
+    end_date timestamp [null]
+    start_location location
+    EndLocation location
+    photos integer [ref: > media_asset.id]
+    findings integer [ref: > finding.id]
+
+    Note: 'Data about an ongoing or past game run'
+}
